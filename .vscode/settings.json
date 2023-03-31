@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "pixel-eyes",
+            "database": "\\\\wsl$\\Ubuntu-20.04\\home\\mmusso\\Workspace\\Academy\\pixel-eyes\\db.sqlite"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
