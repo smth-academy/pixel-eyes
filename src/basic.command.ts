@@ -14,9 +14,8 @@ export class BasicCommand extends CommandRunner {
   async run(passedParam: string[], options?: any): Promise<any> {
     this.logger.log('Basic command run');
 
-    await this.samplersService.create();
-    const a = await this.samplersService.findAll();
-    const b = a.map((x) => x.name);
-    this.logger.log(b);
+    // const a = await this.samplersService.findAll();
+    // const b = a.map((x) => x.name);
+    // this.logger.log(b);
   }
 }
