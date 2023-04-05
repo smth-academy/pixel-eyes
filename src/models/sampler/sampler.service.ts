@@ -13,10 +13,9 @@ export class SamplersService {
     return this.samplerModel.findAll();
   }
 
-  async create(): Promise<Sampler> {
-    return this.samplerModel.create({
-      name: 'Test',
-    });
+  // TODO: @Stefanoberka create a interface to input
+  async create(input): Promise<Sampler> {
+    return this.samplerModel.create(input);
   }
 
   findOne(id: string): Promise<Sampler> {

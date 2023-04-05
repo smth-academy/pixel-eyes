@@ -1,37 +1,35 @@
 /* eslint-disable prettier/prettier */
 import { IntegerDataType, FloatDataType, BigIntDataType, FloatDataTypeOptions, StringDataType, DateDataType } from 'sequelize';
-import { Column, Model, Table } from 'sequelize-typescript';
+import { BelongsTo, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Sampler } from '../sampler/sampler.model';
 import { Differ } from '../differ/differ.model';
 
 // Declare table
 @Table
-export class Diffed extends Model {
+export class Diffed extends Model<Diffed> {
     @Column({    
         primaryKey: true,
         autoIncrement: true
     })
-    diffed_id: IntegerDataType
+    id: number;
     @Column
-    diffRate: FloatDataType
+    diffRate: number;
     @Column
-    diffAbs: BigIntDataType
+    diffAbs: number;
     @Column
-    similarityRate: FloatDataTypeOptions
-    decimals: 4
+    similarityRate: number;
     @Column
-    timeDate: DateDataType
+    timeDate: Date
     @Column
-    imgPath: StringDataType
-}
+    imgPath: string;
 
-// Foreign key to sampler
-Diffed.belongsTo(Sampler, {
-    foreignKey: "sampler",
-    targetKey: "sampler_id"
-})
-// Foreign key to differ
-Diffed.belongsTo(Differ, {
-    foreignKey: "differ",
-    targetKey: "differ_id"
-})
+    @ForeignKey(() => Sampler)
+    samplerId: number
+    @BelongsTo(() => Sampler, 'samplerId')
+    sampler: Sampler;
+
+    @ForeignKey(() => Sampler)
+    differId: number
+    @BelongsTo(() => Differ, 'differId')
+    differ: Differ;
+}

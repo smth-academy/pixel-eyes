@@ -9,11 +9,11 @@ export class Sampler extends Model {
     primaryKey: true,
     autoIncrement: true
   })
-  sampler_id: IntegerDataType
+  id: number;
   @Column
-  value: StringDataType
+  value: string;
   @Column
-  timeDate: DateDataType
+  timeDate: Date;
   @Column
-  imgPath: StringDataType
+  imgPath: string;
 }

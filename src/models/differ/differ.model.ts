@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { DateDataType, IntegerDataType, StringDataType } from 'sequelize';
 import { Column, Model, Table } from 'sequelize-typescript';
 
 @Table
@@ -8,13 +7,13 @@ export class Differ extends Model {
         primaryKey: true,
         autoIncrement: true
     })
-    differ_id: IntegerDataType
+    id: number;
     @Column
-    value: StringDataType
+    value: string;
     @Column
-    timeDate: DateDataType
+    timeDate: Date;
     @Column
-    imgPath: StringDataType
+    imgPath: string;
     @Column
-    sampler: StringDataType
+    sampler: string;
 }

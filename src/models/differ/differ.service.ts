@@ -13,10 +13,9 @@ export class DiffersService {
     return this.differModel.findAll();
   }
 
-  async create(): Promise<Differ> {
-    return this.differModel.create({
-      name: 'Test',
-    });
+  // TODO: @Stefanoberka create a interface to input
+  async create(input): Promise<Differ> {
+    return this.differModel.create(input);
   }
 
   findOne(id: string): Promise<Differ> {

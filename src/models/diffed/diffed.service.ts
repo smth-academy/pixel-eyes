@@ -13,10 +13,9 @@ export class DiffedsService {
     return this.diffedModel.findAll();
   }
 
-  async create(): Promise<Diffed> {
-    return this.diffedModel.create({
-      name: 'Test',
-    });
+  // TODO: @Stefanoberka create a interface to input
+  async create(input): Promise<Diffed> {
+    return this.diffedModel.create(input);
   }
 
   findOne(id: string): Promise<Diffed> {
