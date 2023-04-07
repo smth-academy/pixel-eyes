@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { IntegerDataType, FloatDataType, BigIntDataType, FloatDataTypeOptions, StringDataType, DateDataType } from 'sequelize';
 import { BelongsTo, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Sampler } from '../sampler/sampler.model';
 import { Differ } from '../differ/differ.model';
