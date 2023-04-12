@@ -12,13 +12,13 @@ export class Diffed extends Model<Diffed> {
     })
     id: number;
     @Column
-    diffRate: number;
+    mse: number;
     @Column
-    diffAbs: number;
+    redPixels: number;
     @Column
-    similarityRate: number;
+    misPixels: number;
     @Column
-    timeDate: Date
+    totPixels: number;
     @Column
     imgPath: string;
 

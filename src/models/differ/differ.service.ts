@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Differ } from './differ.model';
+import { DifferCreateDTO } from './differ.interface';
 
 @Injectable()
 export class DiffersService {
@@ -9,12 +10,8 @@ export class DiffersService {
     private differModel: typeof Differ,
   ) {}
 
-  async findAll(): Promise<Differ[]> {
-    return this.differModel.findAll();
-  }
-
   // TODO: @Stefanoberka create a interface to input
-  async create(input): Promise<Differ> {
+  async create(input: DifferCreateDTO): Promise<Differ> {
     return this.differModel.create(input);
   }
 
@@ -24,10 +21,5 @@ export class DiffersService {
         id,
       },
     });
-  }
-
-  async remove(id: string): Promise<void> {
-    const differ = await this.findOne(id);
-    await differ.destroy();
   }
 }

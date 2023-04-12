@@ -26,43 +26,32 @@ export class BasicCommand extends CommandRunner {
   // The options parameter refers to the actual options
   async run(passedParam: string[], options?: any): Promise<any> {
     this.logger.log('Example command log');
-    // Overrides sampler in database
-    if (!!options.override) {
-      const a = this.samplersService.getHello(options);
-      this.logger.log(a);
-    } else {
-      this.logger.log('nooption');
-    }
+    this.logger.debug('Le carote sono buone e nel culo stanno bene');
+    this.logger.verbose(
+      'Aouebraires Magique: respira bene, respira fresco, respira porco dio',
+    );
+    this.logger.warn('Gallinanuda69 è vicina a te');
+    this.logger.error('Allarme, questa non è un emergenza');
+    const a = passedParam;
+    this.samplersService.ciccia(a);
   }
 
   @Option({
     flags: '-v, --verbose',
     description: 'Increase verbosity',
   })
-  parseVerbose(val: string): string {
-    return val;
-  }
   @Option({
     flags: '-o, --override',
     description: 'Overrides the current sampler image',
   })
-  parseOverride(val: string): string {
-    return val;
-  }
   @Option({
     flags: '-H, --headless',
-    description: 'Sets the headless mode',
+    description: 'Enable headless mode',
   })
-  parseHeadless(val: string): string {
-    return val;
-  }
   @Option({
-    flags: '-a, --antialiasing',
-    description: 'Select antialiasing mode',
+    flags: '-a, --antialiasing <true | false>',
+    description: 'Show antialiasing',
   })
-  parseAntialiasing(val: string): string {
-    return val;
-  }
   @Option({
     flags: '-l, --list <int>',
     description: 'Lists the last n compared images',
@@ -70,13 +59,15 @@ export class BasicCommand extends CommandRunner {
   parseList(val: string): number {
     return Number(val);
   }
+
   @Option({
-    flags: '-t, --treshold <float>',
+    flags: '-t, --threshold <float>',
     description: 'Sets the treshold for the compare between 0 and 1',
   })
   parseTreshold(val: string): number {
     return Number(val);
   }
+
   @Option({
     flags: '-A, --alpha <float>',
     description: 'Sets the value for the alpha between 0 and 1',
