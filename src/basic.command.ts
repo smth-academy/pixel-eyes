@@ -5,6 +5,7 @@ import { DiffersService } from './models/differ/differ.service';
 import { SamplersService } from './models/sampler/sampler.service';
 import { PixelMatchingService } from './pixelmatching.service';
 import { PuppeteerService } from './puppeteer.service';
+import { from } from 'rxjs';
 
 @Command({
   name: 'pixeleyes',
@@ -26,6 +27,21 @@ export class BasicCommand extends CommandRunner {
   // The options parameter refers to the actual options
   async run(passedParam: string[], options?: any): Promise<any> {
     this.logger.log('Example command log');
+
+    const url = passedParam[0];
+    if (!url) {
+      this.logger.error('Missing url in param');
+      return;
+    }
+
+    const verbose = !!options.verbose;
+
+    return this.puppeteerService
+      .takeScreenshot(url)
+      .then((pathImage: string) => {
+        // TODO: @MarcoDena @Stefanoberka implement all logic
+        this.logger.verbose(`screenshot image: ${pathImage}`);
+      });
   }
 
   @Option({

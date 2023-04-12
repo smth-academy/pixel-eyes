@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sampler } from './sampler.model';
-import { SamplerCreateDTO } from './sampler.interface';
+import { SamplerCreationAttributes } from './sampler.interface';
 
 @Injectable()
 export class SamplersService {
@@ -12,7 +12,7 @@ export class SamplersService {
   ) {}
 
   // TODO: @Stefanoberka create an interface to input
-  async create(input: SamplerCreateDTO): Promise<Sampler> {
+  async create(input: SamplerCreationAttributes): Promise<Sampler> {
     return this.samplerModel.create(input);
   }
 
@@ -24,8 +24,5 @@ export class SamplersService {
     });
   }
 
-  ciccia(url: string[]) {
-    console.log(url);
-    return url;
-  }
+  // todo: @Stefanoberka implement update function
 }

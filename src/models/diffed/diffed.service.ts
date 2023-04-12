@@ -12,6 +12,7 @@ export class DiffedsService {
 
   // TODO: @Stefanoberka create a interface to input
   async create(input: DiffedCreateDTO): Promise<Diffed> {
+    // @ts-ignore TODO: @Stefanoberka fix this
     return this.diffedModel.create(input);
   }
 }

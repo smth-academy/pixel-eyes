@@ -5,6 +5,8 @@
 db.sqlite
 punto.txt
 
+note.md
+
 # Logs
 logs
 *.log

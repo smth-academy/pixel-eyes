@@ -12,6 +12,7 @@ export class DiffersService {
 
   // TODO: @Stefanoberka create a interface to input
   async create(input: DifferCreateDTO): Promise<Differ> {
+        // @ts-ignore TODO: @Stefanoberka fix this
     return this.differModel.create(input);
   }
 

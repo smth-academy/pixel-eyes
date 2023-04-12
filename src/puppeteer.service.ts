@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import puppeteer, { Browser } from 'puppeteer';
 import { writeFileSync } from 'fs';
 
 @Injectable()
 export class PuppeteerService {
+  private readonly logger = new Logger(PuppeteerService.name);
+
   public takeScreenshot(
     url: string,
     width = 1920,
@@ -35,10 +37,13 @@ export class PuppeteerService {
         return page.evaluate(() => {
           const shadowHost = document.querySelector('vesta-configurator');
           const shadowRoot = shadowHost.shadowRoot;
+          console.log(shadowRoot);
           return shadowRoot.querySelector('canvas')?.toDataURL();
         });
       })
       .then((result) => {
+        console.log(result);
+
         const imageData = result.replace(/^data:image\/\w+;base64,/, '');
         // Save and rename the image in the selected folder
         writeFileSync('screenshot.png', imageData, 'base64');
