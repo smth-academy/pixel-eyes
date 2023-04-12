@@ -53,5 +53,4 @@ export class PuppeteerService {
         browser.close();
       });
   }
-
 }

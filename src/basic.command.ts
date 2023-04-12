@@ -31,4 +31,3 @@ export class BasicCommand extends CommandRunner {
       'https://smth-test-space.fra1.digitaloceanspaces.com/image-matching%2FImmagine%202023-03-20%20151158.png')
   }
 }
-

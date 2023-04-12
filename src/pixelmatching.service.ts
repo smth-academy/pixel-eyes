@@ -108,5 +108,5 @@ export class PixelMatchingService {
       console.log(`error comparing images: ${error}`);
       throw error;
     }
-  };
+  }; 
 }
