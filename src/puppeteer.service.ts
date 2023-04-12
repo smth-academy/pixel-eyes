@@ -4,14 +4,11 @@ import { writeFileSync } from 'fs';
 
 @Injectable()
 export class PuppeteerService {
-  // TODO: @MarcoDena @Stefanoberka import a services to use a functions for Models
-  constructor() { }
-
   public takeScreenshot(
     url: string,
-    width: number = 1920,
-    height: number = 1080,
-    deviceScaleFactor: number = 1,
+    width = 1920,
+    height = 1080,
+    deviceScaleFactor = 1,
   ): Promise<string> {
     let browser: Browser;
     return puppeteer
@@ -27,7 +24,10 @@ export class PuppeteerService {
             height: height,
             deviceScaleFactor: deviceScaleFactor,
           }),
-          page.goto(url, { waitUntil: ['networkidle0', 'domcontentloaded'], timeout: 0 }),
+          page.goto(url, {
+            waitUntil: ['networkidle0', 'domcontentloaded'],
+            timeout: 0,
+          }),
           page.waitForSelector('vesta-configurator'),
         ]).then(() => page);
       })
@@ -36,9 +36,8 @@ export class PuppeteerService {
           const shadowHost = document.querySelector('vesta-configurator');
           const shadowRoot = shadowHost.shadowRoot;
           return shadowRoot.querySelector('canvas')?.toDataURL();
-        })
-      }
-      )
+        });
+      })
       .then((result) => {
         const imageData = result.replace(/^data:image\/\w+;base64,/, '');
         // Save and rename the image in the selected folder

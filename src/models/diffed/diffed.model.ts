@@ -1,5 +1,4 @@
 /* eslint-disable prettier/prettier */
-import { IntegerDataType, FloatDataType, BigIntDataType, FloatDataTypeOptions, StringDataType, DateDataType } from 'sequelize';
 import { BelongsTo, Column, ForeignKey, Model, Table } from 'sequelize-typescript';
 import { Sampler } from '../sampler/sampler.model';
 import { Differ } from '../differ/differ.model';
@@ -13,13 +12,13 @@ export class Diffed extends Model<Diffed> {
     })
     id: number;
     @Column
-    diffRate: number;
+    mse: number;
     @Column
-    diffAbs: number;
+    redPixels: number;
     @Column
-    similarityRate: number;
+    misPixels: number;
     @Column
-    timeDate: Date
+    totPixels: number;
     @Column
     imgPath: string;
 

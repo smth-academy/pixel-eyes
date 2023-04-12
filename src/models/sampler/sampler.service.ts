@@ -1,33 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Sampler } from './sampler.model';
+import { SamplerCreateDTO } from './sampler.interface';
 
 @Injectable()
 export class SamplersService {
   constructor(
+    // Init the sampler model to use in functions
     @InjectModel(Sampler)
     private samplerModel: typeof Sampler,
   ) {}
 
-  async findAll(): Promise<Sampler[]> {
-    return this.samplerModel.findAll();
-  }
-
-  // TODO: @Stefanoberka create a interface to input
-  async create(input): Promise<Sampler> {
+  // TODO: @Stefanoberka create an interface to input
+  async create(input: SamplerCreateDTO): Promise<Sampler> {
     return this.samplerModel.create(input);
   }
 
-  findOne(id: string): Promise<Sampler> {
+  findOne(url: string): Promise<Sampler> {
     return this.samplerModel.findOne({
       where: {
-        id,
+        url: url,
       },
     });
   }
 
-  async remove(id: string): Promise<void> {
-    const sampler = await this.findOne(id);
-    await sampler.destroy();
+  ciccia(url: string[]) {
+    console.log(url);
+    return url;
   }
 }

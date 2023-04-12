@@ -1,13 +1,16 @@
 import { Logger } from '@nestjs/common';
 import { Command, CommandRunner, Option } from 'nest-commander';
-import { Sequelize } from 'sequelize-typescript';
 import { DiffedsService } from './models/diffed/diffed.service';
 import { DiffersService } from './models/differ/differ.service';
 import { SamplersService } from './models/sampler/sampler.service';
-import { PuppeteerService } from './puppeter.service';
 import { PixelMatchingService } from './pixelmatching.service';
+import { PuppeteerService } from './puppeteer.service';
 
-@Command({ name: 'pixeleyes', description: 'TODO CREATE A DESCRIPTION' })
+@Command({
+  name: 'pixeleyes',
+  description:
+    'Compares two images and returns and image and its relative data',
+})
 export class BasicCommand extends CommandRunner {
   private readonly logger = new Logger(BasicCommand.name);
 
@@ -20,14 +23,48 @@ export class BasicCommand extends CommandRunner {
   ) {
     super();
   }
-
+  // The options parameter refers to the actual options
   async run(passedParam: string[], options?: any): Promise<any> {
     this.logger.log('Example command log');
-    this.logger.error('IMPLEMENTS A COMMAND');
-    //this.puppeteerService.takeScreenshot('https://viewer.stage.vesta3dmanager.it/?object_id=bottega_veneta&field=external_link')
-    //.then((message) => console.log(message))
-    //.catch((err) => console.error(err));
-    this.pixelMatchingService.compareImage('https://smth-test-space.fra1.digitaloceanspaces.com/image-matching%2FImmagine%202023-03-20%20151136.png',
-      'https://smth-test-space.fra1.digitaloceanspaces.com/image-matching%2FImmagine%202023-03-20%20151158.png')
+  }
+
+  @Option({
+    flags: '-v, --verbose',
+    description: 'Increase verbosity',
+  })
+  @Option({
+    flags: '-o, --override',
+    description: 'Overrides the current sampler image',
+  })
+  @Option({
+    flags: '-H, --headless',
+    description: 'Enable headless mode',
+  })
+  @Option({
+    flags: '-a, --antialiasing <true | false>',
+    description: 'Show antialiasing',
+  })
+  @Option({
+    flags: '-l, --list <int>',
+    description: 'Lists the last n compared images',
+  })
+  parseList(val: string): number {
+    return Number(val);
+  }
+
+  @Option({
+    flags: '-t, --threshold <float>',
+    description: 'Sets the treshold for the compare between 0 and 1',
+  })
+  parseTreshold(val: string): number {
+    return Number(val);
+  }
+
+  @Option({
+    flags: '-A, --alpha <float>',
+    description: 'Sets the value for the alpha between 0 and 1',
+  })
+  parseAlpha(val: string): number {
+    return Number(val);
   }
 }

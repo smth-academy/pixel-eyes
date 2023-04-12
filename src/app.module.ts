@@ -8,16 +8,16 @@ import { Differ } from './models/differ/differ.model';
 import { DiffersService } from './models/differ/differ.service';
 import { Sampler } from './models/sampler/sampler.model';
 import { SamplersService } from './models/sampler/sampler.service';
-import { PuppeteerService } from './puppeter.service';
 import { PixelMatchingService } from './pixelmatching.service';
+import { PuppeteerService } from './puppeteer.service';
 
 @Module({
   imports: [
     SequelizeModule.forRoot({
       dialect: 'sqlite',
       storage: './db.sqlite',
-      autoLoadModels: false,
-      synchronize: false,
+      autoLoadModels: true,
+      synchronize: true,
       models: [Sampler, Differ, Diffed],
     }),
 

@@ -9,11 +9,7 @@ export class Differ extends Model {
     })
     id: number;
     @Column
-    value: string;
-    @Column
-    timeDate: Date;
+    url: string;
     @Column
     imgPath: string;
-    @Column
-    sampler: string;
 }
