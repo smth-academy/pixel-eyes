@@ -84,7 +84,7 @@ export class PixelMatchingService {
       }
 
       // Save and rename the image with the differences in the selected folder
-      const path_image = `./storage/diffed_images/diff_${Date.now().valueOf()}.png`;
+      const path_image = `./storage/diff_${Date.now().valueOf()}.png`;
       writeFileSync(path_image, PNG.sync.write(diff));
 
       // Calculations on the diff image
