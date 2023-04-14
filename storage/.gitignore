@@ -1,4 +1,5 @@
 *
 !.gitignore
+diffed_images/*
+!diffed_images/
 
-!/diffed_images
