@@ -25,7 +25,7 @@ export class BasicCommand extends CommandRunner {
     super();
   }
   // The options parameter refers to the actual options
-  async run(passedParam: string[], options?: any): Promise<any> {
+  run(passedParam: string[], options?: any): Promise<any> {
     this.logger.log('Example command log');
 
     const url = passedParam[0];
@@ -35,13 +35,16 @@ export class BasicCommand extends CommandRunner {
     }
 
     const verbose = !!options.verbose;
-
+    console.log(url);
     return this.puppeteerService
       .takeScreenshot(url)
       .then((pathImage: string) => {
         // TODO: @MarcoDena @Stefanoberka implement all logic
         this.logger.verbose(`screenshot image: ${pathImage}`);
-      });
+      }).finally(() => {
+        this.pixelMatchingService.compareImage();
+        this.logger.verbose('complimenti mona')
+      })
   }
 
   @Option({

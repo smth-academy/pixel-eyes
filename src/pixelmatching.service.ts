@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
-const fs = require('fs');
+//const fs = require('fs');
+import { writeFileSync } from 'fs';
+import { readFileSync } from 'fs';
 const jimp = require('jimp');
 const PNG = require('pngjs').PNG;
 const pixelmatch = require('pixelmatch');
@@ -29,8 +31,8 @@ export class PixelMatchingService {
   };
 
   public compareImage = async (
-    url1,
-    url2
+    url1 = './storage/screenshot_1681462165930.png',
+    url2 = './storage/screenshot_1681478810928.png'
   ) => {
     try {
       console.log('> Started comparing two images');
@@ -82,10 +84,11 @@ export class PixelMatchingService {
       }
 
       // Save and rename the image with the differences in the selected folder
-      fs.writeFileSync('diff.png', PNG.sync.write(diff));
+      const path_image = `./storage/diffed_images/diff_${Date.now().valueOf()}.png`;
+      writeFileSync(path_image, PNG.sync.write(diff));
 
       // Calculations on the diff image
-      const diffImage = PNG.sync.read(fs.readFileSync('diff.png'));
+      const diffImage = PNG.sync.read(readFileSync(path_image));
       const totalPixels = diffImage.width * diffImage.height;
       let numRedPixels = 0;
       for (let i = 0; i < diffImage.data.length; i += 4) {
