@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-//const fs = require('fs');
 import { writeFileSync } from 'fs';
 import { readFileSync } from 'fs';
 const jimp = require('jimp');
@@ -8,7 +7,6 @@ const pixelmatch = require('pixelmatch');
 
 @Injectable()
 export class PixelMatchingService {
-  // TODO: @MarcoDena @Stefanoberka import a services to use a functions for Models
   constructor() { }
 
   public urlToBuffer = async (url) => {
@@ -18,7 +16,9 @@ export class PixelMatchingService {
           console.log(`error reading image in jimp: ${err}`);
           reject(err);
         }
-        //image.resize(1155, 650); 
+        // Here you can decide the size of output image
+        //image.resize(1920, 1080);
+
         return image.getBuffer(jimp.MIME_PNG, (err, buffer) => {
           if (err) {
             console.log(`error converting image url to buffer: ${err}`);
@@ -30,9 +30,10 @@ export class PixelMatchingService {
     });
   };
 
+  // Function of pixelmatch to compare images
   public compareImage = async (
-    url1 = './storage/screenshot_1681462165930.png',
-    url2 = './storage/screenshot_1681478810928.png'
+    url1,
+    url2
   ) => {
     try {
       console.log('> Started comparing two images');
@@ -82,7 +83,7 @@ export class PixelMatchingService {
       }
 
       // Save and rename the image with the differences in the selected folder
-      const path_image = `./storage/diffed_images/diff_${Date.now().valueOf()}.png`;
+      const path_image = `./storage/diffed_images/diff_${Date.now().valueOf()}.png`
       writeFileSync(path_image, PNG.sync.write(diff));
 
       // Calculations on the diff image
@@ -109,5 +110,5 @@ export class PixelMatchingService {
       console.log(`error comparing images: ${error}`);
       throw error;
     }
-  }; 
+  };
 }

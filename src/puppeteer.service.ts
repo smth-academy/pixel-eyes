@@ -6,62 +6,47 @@ import { writeFileSync } from 'fs';
 export class PuppeteerService {
   private readonly logger = new Logger(PuppeteerService.name);
 
+  // Puppeteer function to make a screenshot in a page
   public takeScreenshot(
-    url: string,
-    width = 1920,
-    height = 1080,
-    deviceScaleFactor = 1,
+    url: string
   ): Promise<string> {
     let browser: Browser;
     return puppeteer
-      .launch({ headless: false })
+      // Set to show chromium or not and open a new page
+      .launch({ headless: true })
       .then((b: Browser) => {
         browser = b;
         return browser.newPage();
       })
       .then((page) => {
-        return page.setViewport({
-          width: width,
-          height: height,
-          deviceScaleFactor: deviceScaleFactor,
+        // Go to the url given in input
+        return page.goto(url, {
+          waitUntil: ['domcontentloaded'],
+          timeout: 0,
         }).then(() => {
-          return page.goto(url, {
-            waitUntil: ['networkidle0', 'domcontentloaded'],
-            timeout: 0,
-          }).then(() => {
-            return page.waitForSelector('div > vesta-configurator').then((page) => {
-              console.log("passo1")
-              return page.evaluate(() => {
-                console.log("ciao")
-                const shadowHost = document.querySelector('div > vesta-configurator');
-                const shadowRoot = shadowHost.shadowRoot;
-
-                
-
-
-                return new Promise((resolve, reject) => {
-                  window.addEventListener("keypress", (evt) => {
-                    console.log('keypress ASDASDSADASDASD', evt)
-                    resolve(evt);
-                  });
-                }).then(() => {
-                  const canvas = shadowRoot.querySelector('canvas')
-                  console.log('canvas screenshot', canvas)
-                  return canvas?.toDataURL();
-                })
-                
-              });
+          // Interact with the page directly in the page DOM environment
+          return page.evaluate(() => {
+            return new Promise((resolve, reject) => {
+              // Wait for the event to load
+              document.addEventListener("vesta3dReady", (event) => {
+                console.log("VESTA 3D READY", event);
+                setTimeout(() => {
+                  window['snapshot']((image) => resolve(image.base64))
+                }, 2000);
+              })
             })
           })
         })
       })
-      
-      .then((result) => {
-        console.log("maroooooooo");
-        const imageData = result.replace(/^data:image\/\w+;base64,/, '');
+
+      .then((result: string) => {
+        console.log('< Element saved');
+
         // Save and rename the image in the selected folder
-        writeFileSync(`./storage/screenshot_${Date.now().valueOf()}.png`, imageData, 'base64');
-        return 'Screenshot saved successfully.';
+        const imageData = result.replace(/^data:image\/\w+;base64,/, '');
+        const path = `./storage/screenshot_${Date.now().valueOf()}.png`;
+        writeFileSync(path, imageData, 'base64');
+        return path;
       })
       .catch((err) => {
         console.error(err);

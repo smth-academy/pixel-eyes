@@ -10,7 +10,7 @@ import { from } from 'rxjs';
 @Command({
   name: 'pixeleyes',
   description:
-    'Compares two images and returns and image and its relative data',
+    'Compares two images and returns an image and its relative data',
 })
 export class BasicCommand extends CommandRunner {
   private readonly logger = new Logger(BasicCommand.name);
@@ -33,18 +33,20 @@ export class BasicCommand extends CommandRunner {
       this.logger.error('Missing url in param');
       return;
     }
+    console.log('> Url entered: ', url);
 
     const verbose = !!options.verbose;
-    console.log(url);
+
     return this.puppeteerService
       .takeScreenshot(url)
       .then((pathImage: string) => {
-        // TODO: @MarcoDena @Stefanoberka implement all logic
         this.logger.verbose(`screenshot image: ${pathImage}`);
+        this.pixelMatchingService.compareImage('./storage/suzanne_giusta.png', pathImage);
+        return pathImage;
       }).finally(() => {
-        this.pixelMatchingService.compareImage();
-        this.logger.verbose('complimenti mona')
+        this.logger.verbose('Mission completed!')
       })
+
   }
 
   @Option({
