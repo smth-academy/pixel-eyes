@@ -16,9 +16,17 @@ export class Diffed extends Model<Diffed> {
     @Column
     redPixels: number;
     @Column
+    purplePixels: number;
+    @Column
+    yellowPixels: number;
+    @Column
+    totPixels: number;
+    @Column
     misPixels: number;
     @Column
     imgPath: string;
+    @Column
+    compt: number;
 
     @ForeignKey(() => Sampler)
     samplerId: number

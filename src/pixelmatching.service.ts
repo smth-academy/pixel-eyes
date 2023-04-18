@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import { Injectable } from '@nestjs/common';
 import { writeFileSync } from 'fs';
 import { readFileSync } from 'fs';
@@ -7,13 +8,14 @@ const pixelmatch = require('pixelmatch');
 
 @Injectable()
 export class PixelMatchingService {
+  private readonly logger = new Logger(PixelMatchingService.name);
   constructor() { }
 
   public urlToBuffer = async (url) => {
     return new Promise(async (resolve, reject) => {
       await jimp.read(url, async (err, image) => {
         if (err) {
-          console.log(`error reading image in jimp: ${err}`);
+          this.logger.error(`error reading image in jimp: ${err}`);
           reject(err);
         }
         // Here you can decide the size of output image
@@ -21,7 +23,7 @@ export class PixelMatchingService {
 
         return image.getBuffer(jimp.MIME_PNG, (err, buffer) => {
           if (err) {
-            console.log(`error converting image url to buffer: ${err}`);
+            this.logger.error(`error converting image url to buffer: ${err}`);
             reject(err);
           }
           resolve(buffer);
@@ -36,7 +38,7 @@ export class PixelMatchingService {
     url2
   ) => {
     try {
-      console.log('> Started comparing two images');
+      this.logger.log('> Started comparing two images');
       const img1Buffer = await this.urlToBuffer(url1);
       const img2Buffer = await this.urlToBuffer(url2);
       const img1 = PNG.sync.read(img1Buffer);
@@ -95,28 +97,51 @@ export class PixelMatchingService {
           numRedPixels++;
         }
       }
-      const diffRatio = numRedPixels / totalPixels * 100;
+      let numPurplePixels = 0;
+      for (let i = 0; i < diffImage.data.length; i += 4) {
+        if (diffImage.data[i] === 255 && diffImage.data[i + 1] === 0 && diffImage.data[i + 2] === 255) {
+          numRedPixels++;
+        }
+      }
+      let numYellowPixels = 0;
+      for (let i = 0; i < diffImage.data.length; i += 4) {
+        if (diffImage.data[i] === 255 && diffImage.data[i + 1] === 255 && diffImage.data[i + 2] === 0) {
+          numRedPixels++;
+        }
+      }
+      const diffRatioR = numRedPixels / totalPixels * 100;
+      const diffRatioP = numPurplePixels / totalPixels * 100;
+      const diffRatioY = numYellowPixels / totalPixels * 100;
       const compatibility = 100 - (difference * 100) / (width * height);
       const mseValue = mse(img1.data, img2.data);
-      const redPixels = diffRatio;
-      const misPixels = difference / totalPixels
+      const redPixels = diffRatioR;
+      const purplePixels = diffRatioP;
+      const yellowPixels = diffRatioY;
+      const misPixels = difference;
 
       // Console output
-      console.log('MSE value (Mean Squared Error):', mseValue);
-      console.log('Red pixels in the diffed image:', redPixels, '%');
-      console.log(`Number of mismatched pixels: ${misPixels}`);
-      //console.log(`Similarity between the two images: ${compatibility.toFixed(4)} %`);
-      console.log('< Completed comparing two images');
-      //return compatibility;
+      this.logger.log(`MSE value (Mean Squared Error): ${mseValue}`);
+      this.logger.log(`Percent of mismatched pixels (Red): ${redPixels} %`);
+      this.logger.log(`Percent of dark on light differences (Purple): ${purplePixels} %`);
+      this.logger.log(`Percent of anti-aliased pixels (Yellow): ${yellowPixels} %`);
+      this.logger.log(`Number of mismatched pixels: ${misPixels}`);
+      this.logger.log(`Number of total pixels: ${totalPixels}`);
+      this.logger.log(`Similarity between the two images: ${compatibility} %`);
+      this.logger.log('< Completed comparing two images');
       return {
         imgPath: path_image,
         mse: mseValue,
         redPixels: redPixels,
+        purplePixels: purplePixels,
+        yellowPixels: yellowPixels,
         misPixels: misPixels,
+        totPixels: totalPixels,
+        compt: compatibility,
+
       };
 
     } catch (error) {
-      console.log(`error comparing images: ${error}`);
+      this.logger.error(`error comparing images: ${error}`);
       throw error;
     }
   };

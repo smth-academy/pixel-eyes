@@ -40,7 +40,7 @@ export class PuppeteerService {
       })
 
       .then((result: string) => {
-        console.log('< Element saved');
+        this.logger.log('< Element saved');
 
         // Save and rename the image in the selected folder
         const imageData = result.replace(/^data:image\/\w+;base64,/, '');
@@ -49,7 +49,7 @@ export class PuppeteerService {
         return path;
       })
       .catch((err) => {
-        console.error(err);
+        this.logger.error(err);
         throw new Error('Error taking screenshot.');
       })
       .finally(() => {

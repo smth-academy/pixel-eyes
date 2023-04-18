@@ -29,14 +29,12 @@ export class BasicCommand extends CommandRunner {
   }
   // The options parameter refers to the actual options
   run(passedParam: string[], options?: any): Promise<any> {
-    this.logger.log('Example command log');
-
     const url = passedParam[0];
     if (!url) {
       this.logger.error('Missing url in param');
       return;
     }
-    console.log('> Url entered: ', url);
+    this.logger.log(`> Url entered:  ${url}`);
 
     const verbose = !!options.verbose;
 
@@ -62,7 +60,7 @@ export class BasicCommand extends CommandRunner {
               type: 'sampler'
             }
           });
-          console.log("Sampler salvato, aggiungere nuovo url per un confronto")
+          this.logger.log("Sampler saved, insert new url to make a comparison.")
         } else {
           res = this.differsService.create({
             imgPath: result.pathImage,
@@ -85,20 +83,28 @@ export class BasicCommand extends CommandRunner {
             .then((result: {
               mse: number,
               redPixels: number,
+              purplePixels: number,
+              yellowPixels: number,
+              totPixels: number,
               misPixels: number,
-              imgPath: string
+              imgPath: string,
+              compt: number,
             }) => {
               return this.diffedsService.create({
                 imgPath: result.imgPath,
                 mse: result.mse,
                 redPixels: result.redPixels,
+                purplePixels: result.purplePixels,
+                yellowPixels: result.yellowPixels,
+                totPixels: result.totPixels,
                 misPixels: result.misPixels,
+                compt: result.compt,
               })
             })
         }
       })
       .finally(() => {
-        this.logger.verbose('Mission completed!')
+        this.logger.log('Mission completed!')
       })
   }
 
