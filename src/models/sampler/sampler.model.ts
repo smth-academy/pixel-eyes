@@ -4,6 +4,9 @@ import { SamplerAttributes, SamplerCreationAttributes } from './sampler.interfac
 
 @Table
 export class Sampler extends Model<SamplerAttributes, SamplerCreationAttributes> {
+  static sampler(sampler: any, object: Sampler | import("../differ/differ.model").Differ) {
+    throw new Error('Method not implemented.');
+  }
   @Column({    
     primaryKey: true,
     autoIncrement: true

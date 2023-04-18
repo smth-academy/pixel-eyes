@@ -97,14 +97,23 @@ export class PixelMatchingService {
       }
       const diffRatio = numRedPixels / totalPixels * 100;
       const compatibility = 100 - (difference * 100) / (width * height);
+      const mseValue = mse(img1.data, img2.data);
+      const redPixels = diffRatio;
+      const misPixels = difference / totalPixels
 
       // Console output
-      console.log('MSE value (Mean Squared Error):', mse(img1.data, img2.data).toFixed(7));
-      console.log('Red pixels in the diffed image:', diffRatio.toFixed(2), '%');
-      console.log(`Number of mismatched pixels: ${difference}/${totalPixels}`);
+      console.log('MSE value (Mean Squared Error):', mseValue);
+      console.log('Red pixels in the diffed image:', redPixels, '%');
+      console.log(`Number of mismatched pixels: ${misPixels}`);
       //console.log(`Similarity between the two images: ${compatibility.toFixed(4)} %`);
       console.log('< Completed comparing two images');
-      return compatibility;
+      //return compatibility;
+      return {
+        imgPath: path_image,
+        mse: mseValue,
+        redPixels: redPixels,
+        misPixels: misPixels,
+      };
 
     } catch (error) {
       console.log(`error comparing images: ${error}`);

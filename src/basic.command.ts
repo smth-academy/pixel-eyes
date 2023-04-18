@@ -6,6 +6,9 @@ import { SamplersService } from './models/sampler/sampler.service';
 import { PixelMatchingService } from './pixelmatching.service';
 import { PuppeteerService } from './puppeteer.service';
 import { from } from 'rxjs';
+import { Sampler } from './models/sampler/sampler.model';
+import { Differ } from './models/differ/differ.model';
+import { Diffed } from './models/diffed/diffed.model';
 
 @Command({
   name: 'pixeleyes',
@@ -40,13 +43,63 @@ export class BasicCommand extends CommandRunner {
     return this.puppeteerService
       .takeScreenshot(url)
       .then((pathImage: string) => {
-        this.logger.verbose(`screenshot image: ${pathImage}`);
-        this.pixelMatchingService.compareImage('./storage/suzanne_giusta.png', pathImage);
-        return pathImage;
-      }).finally(() => {
+        return this.samplersService.findOne(url).then((sampler: Sampler) => {
+          return {
+            sampler: sampler,
+            pathImage: pathImage
+          }
+        });
+      })
+      .then((result: { sampler: Sampler, pathImage: string }) => {
+        let res = null;
+        if (!result.sampler) {
+          res = this.samplersService.create({
+            imgPath: result.pathImage,
+            url: url
+          }).then((sampler: Sampler) => {
+            return {
+              object: sampler,
+              type: 'sampler'
+            }
+          });
+          console.log("Sampler salvato, aggiungere nuovo url per un confronto")
+        } else {
+          res = this.differsService.create({
+            imgPath: result.pathImage,
+            url: url
+          }).then((differ: Differ) => {
+            return {
+              object: differ,
+              sampler: result.sampler,
+              type: 'differ'
+            }
+          });
+          return res;
+        }
+      })
+      .then((result: { object: Sampler | Differ, type: string, sampler?: Sampler }) => {
+        if (result.type === 'sampler') {
+          return void 0;
+        } else {
+          return this.pixelMatchingService.compareImage(result.sampler.imgPath, result.object.imgPath)
+            .then((result: {
+              mse: number,
+              redPixels: number,
+              misPixels: number,
+              imgPath: string
+            }) => {
+              return this.diffedsService.create({
+                imgPath: result.imgPath,
+                mse: result.mse,
+                redPixels: result.redPixels,
+                misPixels: result.misPixels,
+              })
+            })
+        }
+      })
+      .finally(() => {
         this.logger.verbose('Mission completed!')
       })
-
   }
 
   @Option({
