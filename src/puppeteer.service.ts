@@ -6,6 +6,7 @@ import { writeFileSync } from 'fs';
 export class PuppeteerService {
   private readonly logger = new Logger(PuppeteerService.name);
 
+
   // Puppeteer function to make a screenshot in a page
   public takeScreenshot(
     url: string
@@ -31,7 +32,7 @@ export class PuppeteerService {
               document.addEventListener("vesta3dReady", (event) => {
                 console.log("VESTA 3D READY", event);
                 setTimeout(() => {
-                  window['snapshot']((image) => resolve(image.base64))
+                  window['snapshot'](1024, 1024, 2, "main", (image) => resolve(image.base64))
                 }, 2000);
               })
             })

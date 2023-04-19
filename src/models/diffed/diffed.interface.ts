@@ -2,14 +2,16 @@ import { Optional } from 'sequelize';
 
 export type DiffedAttributes = {
   id: string;
+  imgPath: string;
+  width: number;
+  height: number;
   mse: number;
+  compt: number;
   redPixels: number;
   purplePixels: number;
   yellowPixels: number;
-  totPixels: number;
   misPixels: number;
-  imgPath: string;
-  compt: number;
+  totPixels: number;
 }
 
 

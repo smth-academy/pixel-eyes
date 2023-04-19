@@ -81,24 +81,29 @@ export class BasicCommand extends CommandRunner {
         } else {
           return this.pixelMatchingService.compareImage(result.sampler.imgPath, result.object.imgPath)
             .then((result: {
+              imgPath: string,
+              width: number,
+              height: number,
               mse: number,
+              compt: number,
               redPixels: number,
               purplePixels: number,
               yellowPixels: number,
-              totPixels: number,
               misPixels: number,
-              imgPath: string,
-              compt: number,
+              totPixels: number,
             }) => {
               return this.diffedsService.create({
                 imgPath: result.imgPath,
+                width: result.width,
+                height: result.height,
                 mse: result.mse,
+                compt: result.compt,
                 redPixels: result.redPixels,
                 purplePixels: result.purplePixels,
                 yellowPixels: result.yellowPixels,
-                totPixels: result.totPixels,
                 misPixels: result.misPixels,
-                compt: result.compt,
+                totPixels: result.totPixels,
+                
               })
             })
         }

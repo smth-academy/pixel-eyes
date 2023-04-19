@@ -80,12 +80,13 @@ export class PixelMatchingService {
         let error = 0
         for (let i = 0; i < a.length; i++) {
           error += Math.pow((b[i] - a[i]), 2)
+
         }
         return error / a.length
       }
 
       // Save and rename the image with the differences in the selected folder
-      const path_image = `./storage/diffed_images/diff_${Date.now().valueOf()}.png`
+      const path_image = `./storage/diffed_images/diff_${Date.now().valueOf()}_${width}x${height}.png`
       writeFileSync(path_image, PNG.sync.write(diff));
 
       // Calculations on the diff image
@@ -100,13 +101,13 @@ export class PixelMatchingService {
       let numPurplePixels = 0;
       for (let i = 0; i < diffImage.data.length; i += 4) {
         if (diffImage.data[i] === 255 && diffImage.data[i + 1] === 0 && diffImage.data[i + 2] === 255) {
-          numRedPixels++;
+          numPurplePixels++;
         }
       }
       let numYellowPixels = 0;
       for (let i = 0; i < diffImage.data.length; i += 4) {
         if (diffImage.data[i] === 255 && diffImage.data[i + 1] === 255 && diffImage.data[i + 2] === 0) {
-          numRedPixels++;
+          numYellowPixels++;
         }
       }
       const diffRatioR = numRedPixels / totalPixels * 100;
@@ -120,24 +121,26 @@ export class PixelMatchingService {
       const misPixels = difference;
 
       // Console output
-      this.logger.log(`MSE value (Mean Squared Error): ${mseValue}`);
-      this.logger.log(`Percent of mismatched pixels (Red): ${redPixels} %`);
-      this.logger.log(`Percent of dark on light differences (Purple): ${purplePixels} %`);
-      this.logger.log(`Percent of anti-aliased pixels (Yellow): ${yellowPixels} %`);
-      this.logger.log(`Number of mismatched pixels: ${misPixels}`);
-      this.logger.log(`Number of total pixels: ${totalPixels}`);
-      this.logger.log(`Similarity between the two images: ${compatibility} %`);
+      this.logger.log(`${width}x${height} Image resolution`);
+      this.logger.log(`${mseValue} MSE value (Mean Squared Error)`);
+      this.logger.log(`${compatibility} %  Similarity between the two images`);
+      this.logger.log(`${redPixels} %  Percent of mismatched pixels (Red)`);
+      this.logger.log(`${purplePixels} %  Percent of dark on light differences (Purple)`);
+      this.logger.log(`${yellowPixels} %  Percent of anti-aliased pixels (Yellow)`);
+      this.logger.log(`${totalPixels} Number of total pixels`);
+      this.logger.log(`${misPixels} Number of mismatched pixels`);
       this.logger.log('< Completed comparing two images');
       return {
         imgPath: path_image,
+        width: width,
+        height: height,
         mse: mseValue,
+        compt: compatibility,
         redPixels: redPixels,
         purplePixels: purplePixels,
         yellowPixels: yellowPixels,
-        misPixels: misPixels,
         totPixels: totalPixels,
-        compt: compatibility,
-
+        misPixels: misPixels,
       };
 
     } catch (error) {

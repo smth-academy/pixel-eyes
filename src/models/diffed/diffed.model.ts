@@ -12,7 +12,15 @@ export class Diffed extends Model<Diffed> {
     })
     id: number;
     @Column
+    imgPath: string;
+    @Column
+    width: number;
+    @Column
+    height: number;
+    @Column
     mse: number;
+    @Column
+    compt: number;
     @Column
     redPixels: number;
     @Column
@@ -20,13 +28,9 @@ export class Diffed extends Model<Diffed> {
     @Column
     yellowPixels: number;
     @Column
-    totPixels: number;
-    @Column
     misPixels: number;
     @Column
-    imgPath: string;
-    @Column
-    compt: number;
+    totPixels: number;
 
     @ForeignKey(() => Sampler)
     samplerId: number
