@@ -10,11 +10,13 @@ import { Sampler } from './models/sampler/sampler.model';
 import { Differ } from './models/differ/differ.model';
 import { Diffed } from './models/diffed/diffed.model';
 
+// Command definition
 @Command({
   name: 'pixeleyes',
   description:
     'Compares two images and returns an image and its relative data',
 })
+// BasicCommand class definition
 export class BasicCommand extends CommandRunner {
   private readonly logger = new Logger(BasicCommand.name);
 
@@ -27,19 +29,30 @@ export class BasicCommand extends CommandRunner {
   ) {
     super();
   }
-  // The options parameter refers to the actual options
+  // The options parameter refers to the options passed in by the user and defined below
   run(passedParam: string[], options?: any): Promise<any> {
+    // Check if the user has passed the URL
     const url = passedParam[0];
+
     if (!url) {
       this.logger.error('Missing url in param');
       return;
     }
     this.logger.log(`> Url entered:  ${url}`);
 
+    // Compare if there are vesta3dmanager and viewer in the url
+    if (!(url.indexOf("vesta3dmanager") > -1 && url.indexOf("viewer") > -1)) {
+      this.logger.error('This url is not from Vesta!')
+      return;
+    }
+
     const verbose = !!options.verbose;
 
+    // Calling the puppeteer service
     return this.puppeteerService
+      // Takes the screenshot to the passed URL
       .takeScreenshot(url)
+      // Looks for if the image is already in DB
       .then((pathImage: string) => {
         return this.samplersService.findOne(url).then((sampler: Sampler) => {
           return {
@@ -50,6 +63,7 @@ export class BasicCommand extends CommandRunner {
       })
       .then((result: { sampler: Sampler, pathImage: string }) => {
         let res = null;
+        // If there is no img in DB, save the image as sampler
         if (!result.sampler) {
           res = this.samplersService.create({
             imgPath: result.pathImage,
@@ -61,6 +75,7 @@ export class BasicCommand extends CommandRunner {
             }
           });
           this.logger.log("Sampler saved, insert new url to make a comparison.")
+          // If there already is an image in DB, save the image as differ
         } else {
           res = this.differsService.create({
             imgPath: result.pathImage,
@@ -75,11 +90,15 @@ export class BasicCommand extends CommandRunner {
           return res;
         }
       })
+      // Create the object to be either sampler or differ:
+      // If sampler the program exits, if differ passes to pixelmatch
       .then((result: { object: Sampler | Differ, type: string, sampler?: Sampler }) => {
         if (result.type === 'sampler') {
           return void 0;
         } else {
+          // Calling the pixelmatch service and compare the sampler and the differ
           return this.pixelMatchingService.compareImage(result.sampler.imgPath, result.object.imgPath)
+            // Declare the output values to be saved in DB
             .then((result: {
               imgPath: string,
               width: number,
@@ -92,6 +111,7 @@ export class BasicCommand extends CommandRunner {
               misPixels: number,
               totPixels: number,
             }) => {
+              // Query to create a row with the output values
               return this.diffedsService.create({
                 imgPath: result.imgPath,
                 width: result.width,
@@ -103,7 +123,7 @@ export class BasicCommand extends CommandRunner {
                 yellowPixels: result.yellowPixels,
                 misPixels: result.misPixels,
                 totPixels: result.totPixels,
-                
+
               })
             })
         }
