@@ -10,9 +10,14 @@ export class DiffedsService {
     private diffedModel: typeof Diffed,
   ) {}
 
-  // TODO: @Stefanoberka create a interface to input
   async create(input: DiffedCreationAttributes): Promise<Diffed> {
-    // @ts-ignore TODO: @Stefanoberka fix this
     return this.diffedModel.create(input);
+  }
+
+  async findAll(num: number): Promise<Diffed[]> {
+    return this.diffedModel.findAll({
+      order: [['createdAt', 'DESC']],
+      limit: num,
+    });
   }
 }

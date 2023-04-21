@@ -9,9 +9,8 @@ export class SamplersService {
     // Init the sampler model to use in functions
     @InjectModel(Sampler)
     private samplerModel: typeof Sampler,
-  ) {}
+  ) { }
 
-  // TODO: @Stefanoberka create an interface to input
   async create(input: SamplerCreationAttributes): Promise<Sampler> {
     return this.samplerModel.create(input);
   }
@@ -24,5 +23,14 @@ export class SamplersService {
     });
   }
 
-  // todo: @Stefanoberka implement update function
+  update(url: string, param: SamplerCreationAttributes): Promise<Sampler> {
+    return this.samplerModel.update(
+      param,
+      {
+        where: {
+          url: url,
+        },
+        returning: true
+      }).then((result) => result[1][0]);
+  }
 }

@@ -6,6 +6,7 @@ db.sqlite
 punto.txt
 
 note.md
+.prettierignore
 
 # Logs
 logs

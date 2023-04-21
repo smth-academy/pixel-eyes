@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Logger } from '@nestjs/common';
 import { Command, CommandRunner, Option } from 'nest-commander';
 import { DiffedsService } from './models/diffed/diffed.service';
@@ -13,8 +15,7 @@ import { Diffed } from './models/diffed/diffed.model';
 // Command definition
 @Command({
   name: 'pixeleyes',
-  description:
-    'Compares two images and returns an image and its relative data',
+  description: 'Compares two images and returns an image and its relative data',
 })
 // BasicCommand class definition
 export class BasicCommand extends CommandRunner {
@@ -30,7 +31,7 @@ export class BasicCommand extends CommandRunner {
     super();
   }
   // The options parameter refers to the options passed in by the user and defined below
-  run(passedParam: string[], options?: any): Promise<any> {
+  async run(passedParam: string[], options?: any): Promise<any> {
     // Check if the user has passed the URL
     const url = passedParam[0];
 
@@ -40,13 +41,51 @@ export class BasicCommand extends CommandRunner {
     }
     this.logger.log(`> Url entered:  ${url}`);
 
-    // Compare if there are vesta3dmanager and viewer in the url
-    if (!(url.indexOf("vesta3dmanager") > -1 && url.indexOf("viewer") > -1)) {
-      this.logger.error('This url is not from Vesta!')
+    // Check if the input is a valid vesta url
+    // if (!(url.indexOf("vesta3dmanager") > -1 && url.indexOf("viewer") > -1)) {
+    //   this.logger.error('This url is not from Vesta!')
+    //   return;
+    // }
+
+    // Put all the options in const
+    const verbose = options.verbose;
+    const override = options.override;
+    const headless = options.headless;
+    const antialiasing = options.antialiasing;
+    const list = options.list;
+    const threshold = options.threshold;
+    const alpha = options.alpha;
+
+    // List option implementation
+    if (list) {
+      const amt = passedParam[1]
+      const listNum = +amt
+      const records = await this.diffedsService.findAll(listNum);
+      const dataValues = records.map((diffed) => diffed.dataValues);
+      console.log(dataValues);
       return;
     }
 
-    const verbose = !!options.verbose;
+    if (override) {
+      return this.puppeteerService
+      // Takes the screenshot to the passed URL
+      .takeScreenshot(url)
+      // Looks for if the image is already in DB
+      .then((pathImage: string) => {
+        return this.samplersService.findOne(url).then((sampler: Sampler) => {
+          return {
+            sampler: sampler,
+            pathImage: pathImage
+          }
+        });
+      }).then((result: { sampler: Sampler, pathImage: string }) => {
+        return this.samplersService.update(url, {
+          imgPath: result.pathImage,
+          url: url
+        })
+      })
+      
+    } else {
 
     // Calling the puppeteer service
     return this.puppeteerService
@@ -61,6 +100,7 @@ export class BasicCommand extends CommandRunner {
           }
         });
       })
+      // Override option implementation
       .then((result: { sampler: Sampler, pathImage: string }) => {
         let res = null;
         // If there is no img in DB, save the image as sampler
@@ -131,30 +171,47 @@ export class BasicCommand extends CommandRunner {
       .finally(() => {
         this.logger.log('Mission completed!')
       })
+    }
   }
 
   @Option({
     flags: '-v, --verbose',
     description: 'Increase verbosity',
   })
+  parseVerbose(val) {
+    return val;
+  }
+
   @Option({
     flags: '-o, --override',
     description: 'Overrides the current sampler image',
   })
+  parseOverride(val) {
+    return val;
+  }
+
   @Option({
     flags: '-H, --headless',
     description: 'Enable headless mode',
   })
+  parseHeadless(val) {
+    return val;
+  }
+
   @Option({
-    flags: '-a, --antialiasing <true | false>',
+    flags: '-a, --antialiasing',
     description: 'Show antialiasing',
   })
+  parseAntialiasing(val) {
+    return val;
+  }
+
   @Option({
-    flags: '-l, --list <int>',
+    flags: '-l, --list',
     description: 'Lists the last n compared images',
   })
-  parseList(val: string): number {
-    return Number(val);
+  parseList(val: string) {
+    return val;
   }
 
   @Option({

@@ -1,7 +1,7 @@
 import { Optional } from 'sequelize';
 
 export type DiffedAttributes = {
-  id: string;
+  id: number;
   imgPath: string;
   width: number;
   height: number;

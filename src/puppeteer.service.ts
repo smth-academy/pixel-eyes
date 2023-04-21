@@ -14,7 +14,7 @@ export class PuppeteerService {
     let browser: Browser;
     return puppeteer
       // Set to show chromium or not and open a new page
-      .launch({ headless: true })
+      .launch({executablePath: '/usr/bin/chromium-browser', headless: true })
       .then((b: Browser) => {
         browser = b;
         return browser.newPage();
