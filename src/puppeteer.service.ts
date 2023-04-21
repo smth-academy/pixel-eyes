@@ -6,7 +6,6 @@ import { writeFileSync } from 'fs';
 export class PuppeteerService {
   private readonly logger = new Logger(PuppeteerService.name);
 
-
   // Puppeteer function to make a screenshot in a page
   public takeScreenshot(
     url: string
@@ -39,7 +38,6 @@ export class PuppeteerService {
           })
         })
       })
-
       .then((result: string) => {
         this.logger.log('< Element saved');
 

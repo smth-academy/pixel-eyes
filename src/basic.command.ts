@@ -31,13 +31,14 @@ export class BasicCommand extends CommandRunner {
   }
   // The options parameter refers to the options passed in by the user and defined below
   run(passedParam: string[], options?: any): Promise<any> {
-    // Check if the user has passed the URL
     const url = passedParam[0];
 
+    // Check if the user has passed the URL
     if (!url) {
       this.logger.error('Missing url in param');
       return;
     }
+    // Show the url inserted in input
     this.logger.log(`> Url entered:  ${url}`);
 
     // Compare if there are vesta3dmanager and viewer in the url
@@ -129,7 +130,7 @@ export class BasicCommand extends CommandRunner {
         }
       })
       .finally(() => {
-        this.logger.log('Mission completed!')
+        this.logger.log('Process completed!')
       })
   }
 
