@@ -52,7 +52,7 @@ export class PixelMatchingService {
         height,
         {
           // Matching threshold, ranges from 0 to 1. Smaller values make the comparison more sensitive. 0.1 by default.
-          threshold: 0.05,
+          threshold: 0.01,
 
           // If true, disables detecting and ignoring anti-aliased pixels. false by default.
           includeAA: false,

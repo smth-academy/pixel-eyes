@@ -31,7 +31,7 @@ export class PuppeteerService {
               document.addEventListener("vesta3dReady", (event) => {
                 console.log("VESTA 3D READY", event);
                 setTimeout(() => {
-                  window['snapshot'](1024, 1024, 2, "main", (image) => resolve(image.base64))
+                  window['snapshot'](2048, 2048, 1, "main", (image) => resolve(image.base64))
                 }, 2000);
               })
             })
