@@ -18,9 +18,6 @@ export class PixelMatchingService {
           this.logger.error(`error reading image in jimp: ${err}`);
           reject(err);
         }
-        // Here you can decide the size of output image
-        //image.resize(1920, 1080);
-
         return image.getBuffer(jimp.MIME_PNG, (err, buffer) => {
           if (err) {
             this.logger.error(`error converting image url to buffer: ${err}`);

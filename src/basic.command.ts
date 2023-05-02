@@ -35,10 +35,12 @@ export class BasicCommand extends CommandRunner {
     // Check if the user has passed the URL
     const url = passedParam[0];
 
+    // Check if the user has passed the URL
     if (!url) {
       this.logger.error('Missing url in param');
       return;
     }
+    // Show the url inserted in input
     this.logger.log(`> Url entered:  ${url}`);
 
     // Check if the input is a valid vesta url
@@ -169,7 +171,7 @@ export class BasicCommand extends CommandRunner {
         }
       })
       .finally(() => {
-        this.logger.log('Mission completed!')
+        this.logger.log('Process completed!')
       })
     }
   }
